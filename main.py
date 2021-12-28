@@ -40,47 +40,45 @@ class dilKontrol:
 
 class sifrelemeYontemleri:
     def __init__(self,word): 
-        self.Sifre = word        
+        pass
     
-    def sifreSha3_512(self):
+    def sifreSha3_512(self,word):
         sha3_512 = hashes.Hash(hashes.SHA3_512())
         sha3_512.update(self.Sifre)
         print('Printing output')
         print(sha3_512.finalize())
 
-    def sifreSha2_512(self):
+    def sifreSha2_512(self,word):
         sha2_512 = hashes.Hash(hashes.SHA256())
         sha2_512.update(self.Sifre)
         print('Printing output')
         print(sha2_512.finalize())
 
-    def sifreBlake2b(self):
+    def sifreBlake2b(self,word):
         blake2 = hashes.Hash(hashes.BLAKE2b(64))
         blake2.update(self.Sifre)
         print('Printing output')
         print(blake2.finalize())
 
-    def sifreMD5(self):
+    def sifreMD5(self,word):
         md5 = hashes.Hash(hashes.MD5())
         md5.update(self.Sifre)
         print('printing output')
         print(md5.finalize())
     
-    def sifreSHA1(self):
+    def sifreSHA1(self,word):
         sha1 = hashes.Hash(hashes.SHA1())
         sha1.update(self.Sifre)
         print('printing output')
         print(sha1.finalize())
 
-    def sifreSymmetric(self):#Cipher Algorithm
+    def sifreSymmetric(self,word):#Cipher Algorithm
         key = os.urandom(32)
         iv = os.urandom(16)
         cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
         encryptor = cipher.encryptor()
         ct = encryptor.update(b"a secret message") + encryptor.finalize()
-        # decryptor = cipher.decryptor()
-        # decryptor.update(ct) + decryptor.finalize()
-
+        return ct
 
     
 class help:
@@ -88,6 +86,18 @@ class help:
         pass
 
 
+try:
+    dosya = open("şifrelenmemişVeri.txt", "r")
+    word = dosya.read()
+except IOError:
+    print("bir hata oluştu!")
+finally:
+    dosya.close()
 
-c = sifrelemeYontemleri(word)
-c.sifreSymmetric()
+sifreleme = sifrelemeYontemleri(word)
+# sifreleme.sifreSha3_512(word)
+# sifreleme.sifreSha2_512(word)
+# sifreleme.sifreSHA1(word)
+# sifreleme.sifreBlake2b(word)
+sifreleme.sifreSymmetric(word)
+# sifreleme.sifreMD5(word)
