@@ -2,6 +2,9 @@ import hashlib,hmac #Hash fonksiyonları içerir
 from cryptography.hazmat.primitives import hashes
 import os
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives.asymmetric import padding
 
 
 class dilKontrol:
@@ -45,45 +48,63 @@ class sifrelemeYontemleri:
     def sifreSha3_512(self,word):
         sha3_512 = hashes.Hash(hashes.SHA3_512())
         sha3_512.update(self.Sifre)
-        print('Printing output')
-        print(sha3_512.finalize())
+        return sha3_512.finalize()
 
     def sifreSha2_512(self,word):
         sha2_512 = hashes.Hash(hashes.SHA256())
         sha2_512.update(self.Sifre)
-        print('Printing output')
-        print(sha2_512.finalize())
+        return sha2_512.finalize()
 
     def sifreBlake2b(self,word):
         blake2 = hashes.Hash(hashes.BLAKE2b(64))
         blake2.update(self.Sifre)
-        print('Printing output')
-        print(blake2.finalize())
+        return blake2.finalize()
 
     def sifreMD5(self,word):
         md5 = hashes.Hash(hashes.MD5())
         md5.update(self.Sifre)
-        print('printing output')
-        print(md5.finalize())
+        return md5.finalize()
     
     def sifreSHA1(self,word):
         sha1 = hashes.Hash(hashes.SHA1())
         sha1.update(self.Sifre)
-        print('printing output')
-        print(sha1.finalize())
+        return sha1.finalize()
 
     def sifreSymmetric(self,word):#Cipher Algorithm
         key = os.urandom(32)
         iv = os.urandom(16)
         cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
         encryptor = cipher.encryptor()
-        ct = encryptor.update(b"a secret message") + encryptor.finalize()
+        ct = encryptor.update(word.encode('utf-8')) + encryptor.finalize()
         return ct
 
+    def sifreasymmetric(self,word):#Ed25519 signing Algorithm
+        private_key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=2048,
+            backend=default_backend()
+        )
+        public_key = private_key.public_key()
+        encrypted = public_key.encrypt(
+            word.encode('utf-8'),
+            padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+                )
+            )
+        print(encrypted)
     
-class help:
+    def __help__(self):
+        return "selam kızlar"
+
+class helper:
     def __init__(self):
         pass
+    
+    def dilKontrol(self):
+        print("dil kontrol yapmaktadır")
+
 
 
 try:
@@ -94,10 +115,17 @@ except IOError:
 finally:
     dosya.close()
 
+
+
 sifreleme = sifrelemeYontemleri(word)
+sifreleme.help()
 # sifreleme.sifreSha3_512(word)
 # sifreleme.sifreSha2_512(word)
 # sifreleme.sifreSHA1(word)
 # sifreleme.sifreBlake2b(word)
-sifreleme.sifreSymmetric(word)
+# sifreleme.sifreSymmetric(word)
 # sifreleme.sifreMD5(word)
+# sifreleme.sifreasymmetric(word)
+
+help(helper)
+help(helper.dilKontrol())
