@@ -1,14 +1,8 @@
 import hashlib,hmac #Hash fonksiyonları içerir
 from cryptography.hazmat.primitives import hashes
+import os
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-import secrets
-import scrypt
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
-from Crypto.Hash import Poly_1305
-
-
-word = b'selam kizlar. Yani selamin aleykum'
 
 class dilKontrol:
     def __init__(self,word):
@@ -78,17 +72,14 @@ class sifrelemeYontemleri:
         print('printing output')
         print(sha1.finalize())
 
-    def sifreSymmetric(self):
-        salt = secrets.token_bytes(32)
-        key = scrypt.hash(self.Sifre, salt, N=2048, r=8, p=1, buflen=32)
-        mac = Poly1305.new(key=key, cipher=AES, data=self.Sifre)
-        mac_verify = Poly1305.new(data=data, key=key, nonce=nonce,                         
-                         cipher=AES)
-        try:
-            mac_verify.hexverify(mac_digest)
-            print('Message Authentication Success')
-        except:
-            print('Message Authentication Failed')
+    def sifreSymmetric(self):#Cipher Algorithm
+        key = os.urandom(32)
+        iv = os.urandom(16)
+        cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
+        encryptor = cipher.encryptor()
+        ct = encryptor.update(b"a secret message") + encryptor.finalize()
+        # decryptor = cipher.decryptor()
+        # decryptor.update(ct) + decryptor.finalize()
 
 
     
