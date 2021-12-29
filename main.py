@@ -127,17 +127,36 @@ except IOError:
 finally:
     dosya.close()
 
-
+#Fonksiyonların Çağırılması
+helper().dilKontrol()
+dil = dilKontrol()
+print("\t\tFonksiyonların Kullanılması")
+print("Kelime sayisi",dil.kelimeAyir(word))
+print("Cümle sayisi",dil.CumleAyir(word))
+print("Sesli harf sayisi",dil.sesliHarf(word))
+print("Büyük ünlü uyumuna uyan ve uymayan",dil.BuyukUnluUyumu(word))
+#sifreleme 
+helper().sifreleme()
 sfr = sifrelemeYontemleri()
+print("\t\tSifrelemelerin Kullanılması")
+print("Sha3 = ",sfr.sifreSha3_512(word))
+print("Sha2 = ",sfr.sifreSha2_512(word))
+print("blake = ",sfr.sifreBlake2b(word))
+print("md5 = ",sfr.sifreMD5(word))
+print("sha1 = ",sfr.sifreSHA1(word))
+print("simetrik = ",sfr.sifreSymmetric(word))
+print("asimetrik = ",sfr.sifreasymmetric(word))
 
+try:
+    conn = pyodbc.connect('Driver={SQL Server};'
+                        'Server=FAWMAINPC;'
+                        'Database=dbTicarii;'
+                        'Trusted_Connection=yes;')
 
-conn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=FAWMAINPC;'
-                      'Database=dbTicarii;'
-                      'Trusted_Connection=yes;')
-
-cursor = conn.cursor()
-com = cursor.execute("INSERT INTO dbo.sifreleme (sha3_512,sha2_512,blake2,md5,sha1,cipher,rsa) VALUES (?,?,?,?,?,?,?)",(sfr.sifreSha3_512(word),sfr.sifreSha2_512(word),sfr.sifreBlake2b(word),sfr.sifreMD5(word),sfr.sifreSHA1(word),sfr.sifreSymmetric(word),sfr.sifreasymmetric(word)))
-com.commit()
-conn.close()
-
+    cursor = conn.cursor()
+    com = cursor.execute("INSERT INTO dbo.sifreleme (sha3_512,sha2_512,blake2,md5,sha1,cipher,rsa) VALUES (?,?,?,?,?,?,?)",(sfr.sifreSha3_512(word),sfr.sifreSha2_512(word),sfr.sifreBlake2b(word),sfr.sifreMD5(word),sfr.sifreSHA1(word),sfr.sifreSymmetric(word),sfr.sifreasymmetric(word)))
+    com.commit()
+except:
+    print("Cipher Algoritması Şifrelenemedi")
+finally: 
+    conn.close()
