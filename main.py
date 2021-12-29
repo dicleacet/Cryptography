@@ -1,4 +1,3 @@
-import hashlib,hmac 
 from cryptography.hazmat.primitives import hashes
 import os
 import pyodbc 
@@ -23,7 +22,6 @@ class dilKontrol:
         
     def sesliHarf(self,word):
         sayac = 0
-        print(word)
         for i in word.lower():
             for j in self.unluler:
                 if(i == j):
@@ -71,7 +69,7 @@ class sifrelemeYontemleri:
         sha1.update(word.encode('utf-8'))
         return sha1.finalize()
 
-    def sifreSymmetric(self,word):#Cipher Algorithm
+    def sifreSymmetric(self,word):#Cipher 
         cipher = Cipher(algorithms.AES(self.key), modes.CBC(self.iv))
         encryptor = cipher.encryptor()
         try :
@@ -80,7 +78,7 @@ class sifrelemeYontemleri:
             ct = "Şifrelenecek Veri 16 harf olmalıdır."
         return ct
 
-    def sifreasymmetric(self,word):#rsa Algorithm
+    def sifreasymmetric(self,word):#rsa 
         private_key = rsa.generate_private_key(
             public_exponent=65537,
             key_size=2048,
